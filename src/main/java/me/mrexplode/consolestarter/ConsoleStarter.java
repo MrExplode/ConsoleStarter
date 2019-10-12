@@ -88,18 +88,18 @@ public class ConsoleStarter {
 			}
 			try {
 				File batch = new File("Launcher.bat");
-				if(!batch.exists()){
+				if(batch.exists()) {
+	                batch.delete();
 	                batch.createNewFile();
-	                PrintWriter writer = new PrintWriter(batch);
-	                writer.println("@echo off");
-	                writer.print("title " + title +  " ");
-	                writer.println("mode con: cols=" + columns  + "lines=" + lines);
-	                writer.println("java" + (ram != -1 ? ram + "MB" : "") + " -jar \"" + filename + "\"" + (debugging == 1 ? " debug" : ""));
-	                writer.println("pause");
-	                writer.flush();
-	                writer.close();
 	            }
-				batch.deleteOnExit();
+                PrintWriter writer = new PrintWriter(batch);
+                writer.println("@echo off");
+                writer.println("title " + title +  " ");
+                writer.println("mode con: cols=" + columns  + " lines=" + lines);
+                writer.println("java " + (ram != -1 ? "-Xmx" +ram + "MB" : "") + " -jar \"" + filename + "\"" + (debugging == 1 ? " debug" : ""));
+                writer.println("pause");
+                writer.flush();
+                writer.close();
 	            Runtime.getRuntime().exec(new String[] {"cmd", "/c", "start", "\"\"", batch.getPath()});
 	            return false;
 			} catch (IOException e) {
@@ -107,8 +107,16 @@ public class ConsoleStarter {
 				return false;
 			}
 		} else {
+		    File batch = new File("Launcher.bat");
+		    if (batch.exists())
+		        batch.delete();
 			return true;
 		}
+	}
+	
+	public static void main(String[] args) {
+	    new ConsoleStarter("ConsoleStarter demo", 30, 140, true, 512, ConsoleStarter.class).start();
+	    System.out.println("Welcome in Console!");
 	}
 	
 	/*
