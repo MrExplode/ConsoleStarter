@@ -10,6 +10,8 @@ import java.io.PrintStream;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 import javax.swing.JOptionPane;
 
@@ -21,6 +23,7 @@ public class ConsoleStarter {
 	private boolean debug = false;
 	private int ram = -1;
 	private Class<?> classInstance = null;
+	private String[] additional_args = null;
 	
 	public ConsoleStarter() {
 	    this(null, -1, -1, false, -1, null);
@@ -39,7 +42,11 @@ public class ConsoleStarter {
 	}
 	
 	public ConsoleStarter(String title, int lines, int columns) {
-	    this(title, lines, columns, false, -1, null);
+        this(title, lines, columns, false, -1, null);
+    }
+	
+	public ConsoleStarter(String title, String... additional_args) {
+	    this(title, -1, -1, false, -1, null, additional_args);
 	}
 	
 	public ConsoleStarter(String title, int lines, int columns, boolean debug) {
@@ -50,7 +57,7 @@ public class ConsoleStarter {
         this(title, lines, columns, debug, ram, null);
     }
 	
-	public ConsoleStarter(String title, int lines, int columns, boolean debug, int ram, Class<?> classInstance) {
+	public ConsoleStarter(String title, int lines, int columns, boolean debug, int ram, Class<?> classInstance, String... additional_args) {
 	    if (title != null)
 	        this.title = title;
 	    if (lines != -1)
@@ -65,6 +72,8 @@ public class ConsoleStarter {
 	    } else {
 	        this.classInstance = ConsoleStarter.class;
 	    }
+	    
+	    this.additional_args = additional_args;
 	        
 	}
 	
@@ -96,7 +105,7 @@ public class ConsoleStarter {
                 writer.println("@echo off");
                 writer.println("title " + title +  " ");
                 writer.println("mode con: cols=" + columns  + " lines=" + lines);
-                writer.println("java " + (ram != -1 ? "-Xmx" +ram + "MB" : "") + " -jar \"" + filename + "\"" + (debugging == 1 ? " debug" : ""));
+                writer.println("java " + (ram != -1 ? "-Xmx" +ram + "MB" : "") + " -jar \"" + filename + "\"" + (debugging == 1 ? " debug" : "") + " " + String.join(" ", additional_args));
                 writer.println("pause");
                 writer.flush();
                 writer.close();
@@ -107,9 +116,6 @@ public class ConsoleStarter {
 				return false;
 			}
 		} else {
-		    File batch = new File("Launcher.bat");
-		    if (batch.exists())
-		        batch.delete();
 			return true;
 		}
 	}
