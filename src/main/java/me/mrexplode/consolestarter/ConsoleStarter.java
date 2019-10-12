@@ -10,8 +10,6 @@ import java.io.PrintStream;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
-import java.util.ArrayList;
-import java.util.Arrays;
 
 import javax.swing.JOptionPane;
 
