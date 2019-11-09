@@ -48,6 +48,10 @@ public class ConsoleStarter {
 	    this(title, -1, -1, false, -1, null, additional_args);
 	}
 	
+	public ConsoleStarter(String title, String[] vm_args, String... additional_args) {
+        this(title, -1, -1, false, -1, vm_args, additional_args);
+    }
+	
 	public ConsoleStarter(String title, int lines, int columns, boolean debug) {
 	    this(title, lines, columns, debug, -1, null, null);
 	}
