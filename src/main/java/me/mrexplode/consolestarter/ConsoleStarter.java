@@ -21,26 +21,27 @@ public class ConsoleStarter {
 	private boolean debug = false;
 	private int ram = -1;
 	private Class<?> classInstance = null;
+	private String[] vm_args = null;
 	private String[] additional_args = null;
 	
 	public ConsoleStarter() {
-	    this(null, -1, -1, false, -1, null);
+	    this("Console Application", -1, -1, false, -1, null, null);
 	}
 	
 	public ConsoleStarter(String title) {
-	    this(title, -1, -1, false, -1, null);
+	    this(title, -1, -1, false, -1, null, null);
 	}
 	
 	public ConsoleStarter(String title, int ram) {
-	    this(title, -1, -1, false, ram, null);
+	    this(title, -1, -1, false, ram, null, null);
 	}
 	
 	public ConsoleStarter(String title, boolean debug) {
-	    this(title, -1, -1, debug, -1, null);
+	    this(title, -1, -1, debug, -1, null, null);
 	}
 	
 	public ConsoleStarter(String title, int lines, int columns) {
-        this(title, lines, columns, false, -1, null);
+        this(title, lines, columns, false, -1, null, null);
     }
 	
 	public ConsoleStarter(String title, String... additional_args) {
@@ -48,14 +49,14 @@ public class ConsoleStarter {
 	}
 	
 	public ConsoleStarter(String title, int lines, int columns, boolean debug) {
-	    this(title, lines, columns, debug, -1, null);
+	    this(title, lines, columns, debug, -1, null, null);
 	}
 	
 	public ConsoleStarter(String title, int lines, int columns, int ram, boolean debug) {
-        this(title, lines, columns, debug, ram, null);
+        this(title, lines, columns, debug, ram, null, null);
     }
 	
-	public ConsoleStarter(String title, int lines, int columns, boolean debug, int ram, Class<?> classInstance, String... additional_args) {
+	public ConsoleStarter(String title, int lines, int columns, boolean debug, int ram, String[] vm_args, String... additional_args) {
 	    if (title != null)
 	        this.title = title;
 	    if (lines != -1)
@@ -65,12 +66,8 @@ public class ConsoleStarter {
 	    this.debug = debug;
 	    if (ram != -1)
 	        this.ram = ram;
-	    if (classInstance != null) {
-	        this.classInstance = classInstance;
-	    } else {
-	        this.classInstance = ConsoleStarter.class;
-	    }
-	    
+	    this.classInstance = ConsoleStarter.class;
+	    this.vm_args = vm_args;
 	    this.additional_args = additional_args;
 	        
 	}
@@ -103,7 +100,7 @@ public class ConsoleStarter {
                 writer.println("@echo off");
                 writer.println("title " + title +  " ");
                 writer.println("mode con: cols=" + columns  + " lines=" + lines);
-                writer.println("java " + (ram != -1 ? "-Xmx" +ram + "MB" : "") + " -jar \"" + filename + "\"" + (debugging == 1 ? " debug" : "") + " " + String.join(" ", additional_args));
+                writer.println("java " + (vm_args == null ? "" : String.join(" ", vm_args)) + (ram != -1 ? "-Xmx" +ram + "MB" : "") + " -jar \"" + filename + "\"" + (debugging == 1 ? " debug" : "") + " " + (additional_args == null ? "" : String.join(" ", additional_args)));
                 writer.println("pause");
                 writer.flush();
                 writer.close();
@@ -116,11 +113,6 @@ public class ConsoleStarter {
 		} else {
 			return true;
 		}
-	}
-	
-	public static void main(String[] args) {
-	    new ConsoleStarter("ConsoleStarter demo", 30, 140, true, 512, ConsoleStarter.class).start();
-	    System.out.println("Welcome in Console!");
 	}
 	
 	/*
